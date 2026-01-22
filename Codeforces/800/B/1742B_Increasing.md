@@ -6,7 +6,7 @@ Codeforces
 
 ## Problem Link
 
-[B. Increasing](https://codeforces.com/problemset/problem/1660/B)
+[B. Increasing](https://codeforces.com/problemset/problem/1742/B)
 
 ## Problem Statement
 
