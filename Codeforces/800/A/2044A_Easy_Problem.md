@@ -6,7 +6,7 @@ Codeforces
 
 ## Problem Link
 
-[A. Easy Problem](https://codeforces.com/problemset/problem/1760/A)
+[A. Easy Problem](https://codeforces.com/problemset/problem/2044/A)
 
 ## Problem Statement
 
