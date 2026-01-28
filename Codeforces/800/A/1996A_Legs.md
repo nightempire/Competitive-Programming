@@ -6,7 +6,7 @@ Codeforces
 
 ## Problem Link
 
-[A. Legs](https://codeforces.com/problemset/problem/1660/A)
+[A. Legs](https://codeforces.com/problemset/problem/1996/A)
 
 ## Problem Statement
 
