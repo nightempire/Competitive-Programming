@@ -37,6 +37,7 @@ This structure ensures the repository is useful not only for solving problems, b
 * Codeforces
 * LeetCode
 * HackerEarth
+* HackerRank
 * Other competitive programming platforms may be added in the future
 
 ---
