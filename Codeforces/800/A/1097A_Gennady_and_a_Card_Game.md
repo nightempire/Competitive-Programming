@@ -53,7 +53,7 @@ Determine whether Gennady can play his card.
 
 ### Example 1
 
-Input
+Input:
 
 ```id="p9b3mz"
 AS
