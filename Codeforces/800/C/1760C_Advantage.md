@@ -57,7 +57,7 @@ For each test case:
 
 ### Example 1
 
-Input
+Input:
 
 ```
 1
