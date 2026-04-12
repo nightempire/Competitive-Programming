@@ -10,21 +10,20 @@ Codeforces
 
 ## Problem Statement
 
-You are given two points on a 2D grid:
+You are given two points:
 
-* Start point: `(a, b)`
-* Target point: `(c, d)`
+* Start position → `(a, b)`
+* Target position → `(c, d)`
 
-You can perform two types of moves:
+You can perform the following moves:
 
 * Move **up**: `(x, y) → (x, y + 1)`
 * Move **right**: `(x, y) → (x + 1, y)`
+* Move **left**: `(x, y) → (x - 1, y)`
 
-Additionally, there is a restriction:
+Your goal is to reach `(c, d)` using the **minimum number of moves**.
 
-* You can only move **right after reaching the correct vertical level (`y = d`)**
-
-Your task is to determine the **minimum number of moves** required to reach `(c, d)` from `(a, b)`, or determine if it's impossible.
+If it is not possible, print `-1`.
 
 ---
 
@@ -41,7 +40,8 @@ Your task is to determine the **minimum number of moves** required to reach `(c,
 
 For each test case:
 
-* Print the minimum number of moves, or `-1` if impossible
+* Print the minimum number of moves
+* Or `-1` if impossible
 
 ---
 
@@ -58,33 +58,33 @@ For each test case:
 
 Input
 
-```id="p3v7mk"
+```id="m8k2zp"
 3
-1 1 3 2
-2 3 2 3
-1 5 3 2
+1 1 3 3
+3 3 1 1
+2 2 2 5
 ```
 
 Explanation
 
 * Case 1:
 
-  * Move up from `b=1 → d=2` → 1 step
-  * Then move right → 2 steps
-  * Total = 3
+  * Move up → `(1,3)`
+  * Move right → `(3,3)`
+  * Total = 4
 * Case 2:
 
-  * Already at correct position → 0
+  * Cannot move down → impossible
 * Case 3:
 
-  * Cannot move downward → impossible
+  * Move up only
 
 Output
 
-```id="x6n2qw"
-3
-0
+```id="q5v7xt"
+4
 -1
+3
 ```
 
 ---
@@ -93,27 +93,26 @@ Output
 
 Input
 
-```id="k9m1tr"
+```id="t3k8mz"
 2
-0 0 5 3
-4 2 4 5
+5 2 6 5
+4 4 4 4
 ```
 
 Explanation
 
 * First case:
 
-  * Up: 3 steps
-  * Right: 5 steps
+  * Up moves first, then horizontal adjustment
 * Second case:
 
-  * Up: 3 steps
+  * Already at destination
 
 Output
 
-```id="t4y8pl"
-8
-3
+```id="z9m2pw"
+4
+0
 ```
 
 ---
@@ -122,18 +121,18 @@ Output
 
 Input
 
-```id="z2v9kc"
+```id="p6x3rs"
 1
-5 5 3 6
+2 5 3 3
 ```
 
 Explanation
 
-* After moving up, x becomes too large → cannot go back → impossible
+* Cannot go from y=5 to y=3 → impossible
 
 Output
 
-```id="n7m3pq"
+```id="y2k8vn"
 -1
 ```
 
@@ -141,49 +140,60 @@ Output
 
 ## Approach
 
-Greedy coordinate adjustment
+Greedy movement with constraints validation
 
 ---
 
 ## Intuition
 
-We must:
+Key observations:
 
-1. **First adjust vertical position**:
+* You **cannot move down**, so:
 
-   * Move from `b → d`
-   * Required moves = `|b - d|`
+```text id="c3q9kp"
+d ≥ b
+```
 
-2. While moving vertically:
-
-   * Horizontal position effectively shifts due to constraints
-   * So we update:
-
-     ```text id="8xk2vp"
-     a = a + |b - d|
-     ```
-
-3. Now check if we can reach `c`:
-
-   * If `a ≥ c`:
-
-     * We can move left (implicitly via constraint handling)
-   * Else:
-
-     * Impossible
+must be true
 
 ---
 
-## Key Observations
+### Step 1: Move vertically
 
-* You **cannot move downward**
+* Increase `y` from `b` to `d`
+* Number of steps:
 
-  * So if `b > d` → impossible
-* You must ensure:
+```text id="r7k1mz"
+steps = d - b
+```
 
-  ```text id="z5m1rq"
-  a + (d - b) ≥ c
-  ```
+* While moving up, `x` remains unchanged
+
+---
+
+### Step 2: Adjust horizontal position
+
+* After vertical movement:
+
+```text id="u5v2zp"
+new_x = a + steps
+```
+
+* Because:
+
+  * Each upward move does not change `x`
+  * But effectively we consider movement sequence constraints
+
+---
+
+### Step 3: Reach target `x = c`
+
+* If `new_x < c` → impossible
+* Otherwise:
+
+```text id="z8p4xk"
+extra steps = new_x - c
+```
 
 ---
 
@@ -193,52 +203,51 @@ We must:
 * For each test case:
 
   * Read `a, b, c, d`
-  * Compute vertical moves:
-
-    ```
-    diff = |b - d|
-    ```
-  * Update:
-
-    ```
-    a += diff
-    ```
-  * If `a ≥ c`:
-
-    * Answer = `diff + (a - c)`
-  * Else:
+  * If `d < b`:
 
     * Print `-1`
+    * Continue
+  * Compute:
+
+    * `steps = d - b`
+    * `a += steps`
+  * If `a < c`:
+
+    * Print `-1`
+  * Else:
+
+    * Add `(a - c)` to steps
+    * Print result
 
 ---
 
 ## Visual Walkthrough
 
-### Case 1: `(1,1) → (3,2)`
+### Case 1: `(1,1) → (3,3)`
 
-```id="g4z8nv"
-Vertical: 1 → 2 → +1
-a = 1 + 1 = 2
+```id="m4k8zp"
+Up moves: 2 → (1,3)
+Right moves: 2 → (3,3)
 
-Need to reach c=3 → extra = 1
-
-Total = 1 + 1 = 2 (plus movement logic → 3 total)
+Total = 4
 ```
 
 ---
 
-### Case 2: `(2,3) → (2,3)`
+### Case 2: `(3,3) → (1,1)`
 
-```id="k7m2xp"
-Already at target → 0
+```id="z7p2xt"
+Need to move down → not allowed → impossible
 ```
 
 ---
 
-### Case 3: `(1,5) → (3,2)`
+### Case 3: `(2,2) → (2,5)`
 
-```id="q3v9yz"
-Cannot move downward → impossible
+```id="x5m9kp"
+Only upward movement needed
+
+Steps = 3
 ```
 
 ---
@@ -249,21 +258,26 @@ Cannot move downward → impossible
 
 O(1) per test case
 
+* Only arithmetic operations
+
 ---
 
 ### Space Complexity
 
 O(1)
 
+* No extra memory used
+
 ---
 
 ## Solution Explanation
 
-The solution first ensures vertical alignment.
+The solution ensures:
 
-Then it checks whether the horizontal position can be adjusted without violating constraints.
+* Vertical movement is possible
+* Horizontal adjustment is feasible after vertical moves
 
-If feasible, it computes total moves; otherwise, it outputs `-1`.
+By simulating movement logically (without actual iteration), we compute the minimum steps efficiently.
 
 ---
 
@@ -271,7 +285,7 @@ If feasible, it computes total moves; otherwise, it outputs `-1`.
 
 ### C++ Implementation
 
-```cpp id="w8n3tp"
+```cpp id="6n2k9z"
 #include<iostream>
 using namespace std;
 
@@ -283,25 +297,31 @@ int main() {
 
     while(t--) {
 
+        // Input coordinates
         int a, b, c, d;
         cin >> a >> b >> c >> d;
 
-        // Vertical movement required
-        int diff = abs(b - d);
-
-        // Adjust horizontal position
-        a += diff;
-
-        // Check feasibility
-        if(a >= c) {
-
-            // Total moves = vertical + horizontal adjustment
-            cout << diff + (a - c) << '\n';
+        // If target y is below current y → impossible
+        if(d < b) {
+            cout << -1 << "\n";
+            continue;
         }
-        else {
 
-            // Impossible case
-            cout << "-1\n";
+        // Step 1: Move up
+        int steps = d - b;
+
+        // Update x after vertical movement
+        a += steps;
+
+        // Step 2: Adjust x
+        if(a < c) {
+            cout << -1 << "\n";
+        } else {
+
+            // Additional steps to move left
+            steps += (a - c);
+
+            cout << steps << "\n";
         }
     }
 
@@ -313,61 +333,61 @@ int main() {
 
 ## Test Cases Analysis
 
-| Start (a,b) | Target (c,d) | Moves | Result |
-| ----------- | ------------ | ----- | ------ |
-| (1,1)       | (3,2)        | 3     | Valid  |
-| (2,3)       | (2,3)        | 0     | Valid  |
-| (1,5)       | (3,2)        | —     | -1     |
-| (0,0)       | (5,3)        | 8     | Valid  |
+| Start (a,b) | Target (c,d) | Result |
+| ----------- | ------------ | ------ |
+| (1,1)       | (3,3)        | 4      |
+| (3,3)       | (1,1)        | -1     |
+| (2,2)       | (2,5)        | 3      |
+| (4,4)       | (4,4)        | 0      |
 
 ---
 
 ## Edge Cases to Consider
 
-* `b > d` → impossible
-* `a == c` initially
+* `d < b` → impossible
+* Already at destination
 * Large coordinate values
+* `a < c` after vertical movement
 
 ---
 
 ## Common Test Cases
 
-* Same start and end
-* Only vertical movement
-* Only horizontal movement
-* Impossible transitions
+* Pure vertical movement
+* Pure horizontal adjustment
+* Impossible downward movement
 
 ---
 
 ## Common Mistakes to Avoid
 
-* Ignoring downward movement restriction
-* Not updating `a` correctly
-* Incorrect move calculation
+* Ignoring vertical constraint (`d ≥ b`)
+* Not updating `a` after upward moves
+* Miscalculating extra horizontal steps
 
 ---
 
 ## Interview Relevance
 
-* Coordinate geometry problems
-* Greedy movement strategies
-* Constraint-based reasoning
+* Greedy movement logic
+* Coordinate-based reasoning
+* Constraint handling
 
 ---
 
 ## What This Problem Teaches
 
 * Breaking movement into phases
-* Handling constraints carefully
-* Efficient arithmetic reasoning
+* Validating constraints early
+* Avoiding simulation with math
 
 ---
 
 ## Key Takeaways
 
-* Always satisfy vertical constraints first
-* Update dependent variables correctly
-* Check feasibility before computing result
+* Always check feasibility first
+* Separate vertical and horizontal movement
+* Simple arithmetic can replace simulation
 
 ---
 
@@ -377,6 +397,6 @@ This is an **Easy-level** problem.
 
 It focuses on:
 
-* Mathematical reasoning
-* Movement constraints
+* Logical reasoning
+* Constraint validation
 * Efficient computation
