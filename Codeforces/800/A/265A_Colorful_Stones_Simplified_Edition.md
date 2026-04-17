@@ -49,7 +49,7 @@ Your task is to determine the **final position** after processing all characters
 
 ### Example 1
 
-Input
+Input:
 
 ```id="x8k3mp"
 RGB
