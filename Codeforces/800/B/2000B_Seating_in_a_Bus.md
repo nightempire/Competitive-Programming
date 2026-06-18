@@ -465,7 +465,7 @@ int main() {
         cin >> n >> left;
 
         // Initially only the first seat is occupied
-        left = right = left;
+        left = right;
 
         // Indicates whether the seating order remains valid
         bool flag = true;
